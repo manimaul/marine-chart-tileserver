@@ -4,11 +4,11 @@ project(marine_chart_tileserver)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(marine_chart_tileserver
-        src/EchoHandler.cpp
-        src/EchoHandler.h
-        src/EchoServer.cpp
-        src/EchoStats.h
-        )
+        src/http_server/EchoHandler.cpp
+        src/http_server/EchoHandler.h
+        src/http_server/EchoServer.cpp
+        src/http_server/EchoStats.h
+        src/Main.cpp src/Config.h)
 
 target_link_libraries(marine_chart_tileserver -lfolly -lwangle -lproxygenhttpserver -lproxygenlib -lglog -lgflags -lboost_system)
 
