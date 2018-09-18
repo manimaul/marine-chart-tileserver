@@ -24,11 +24,13 @@ public:
     void onEOM() noexcept override {
         auto request = wk::HttpRequest();
         wk::HttpResponse response = handler(request);
-        proxygen::ResponseBuilder(downstream_)
-                .status(200, "OK")
-                .header("hello", "world")
-                .body(folly::IOBuf::create(0))
-                .sendWithEOM();
+        auto builder = proxygen::ResponseBuilder(downstream_);
+        builder.status(response.status, wk::HttpStatus::reasonPhrase(response.status))
+                .body(folly::IOBuf::copyBuffer(response.getBody()));
+        for (auto const &pair : response.getHeaders()) {
+            builder.header(pair.first, pair.second);
+        }
+        builder.sendWithEOM();
     }
 
     void onUpgrade(proxygen::UpgradeProtocol proto) noexcept override {
