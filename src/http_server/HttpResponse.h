@@ -4,38 +4,24 @@
 #include <vector>
 #include <unordered_map>
 #include "HttpStatus.h"
+#include "HttpMessage.h"
 
 namespace wk {
-    class HttpResponse {
+    class HttpResponse : public HttpMessage {
     public:
-        explicit HttpResponse(HttpStatus::Code const status) : status(status) {
-            headers = {};
-            body = "";
-        }
+        explicit HttpResponse(HttpStatus::Code const status) : status(status), HttpMessage() {}
 
         HttpStatus::Code const status;
 
-        std::unordered_map<std::string, std::string> const &getHeaders() {
-            return headers;
-        }
-
-        std::string const &getBody() {
-            return body;
-        }
-
-        HttpResponse &setBody(const std::string &body) {
-            HttpResponse::body = body;
+        HttpResponse &setBody(std::string const &body) override {
+            HttpMessage::setBody(body);
             return *this;
         }
 
-        HttpResponse &addHeader(std::string const &key, std::string const &value) {
-            auto header = std::pair<std::string, std::string>(key, value);
-            headers.insert(header);
+        HttpResponse &addHeader(std::string const &key, std::string const &value) override {
+            HttpMessage::addHeader(key, value);
             return *this;
         }
 
-    private:
-        std::string body; // todo: (WK) folly::IOBuf
-        std::unordered_map<std::string, std::string> headers;
     };
 }

@@ -12,7 +12,9 @@ add_executable(marine_chart_tileserver
         src/http_server/HttpStatus.h
         src/http_server/HttpServer.cpp
         src/http_server/HttpServer.h
-        src/http_server/HttpMethod.h)
+        src/http_server/HttpMethod.h
+        src/http_server/HttpMessage.cpp
+        src/http_server/HttpMessage.h)
 
 target_link_libraries(marine_chart_tileserver -lfolly -lwangle -lproxygenhttpserver -lproxygenlib -lglog -lgflags -lboost_system)
 

@@ -1,7 +1,9 @@
 #pragma once
 
+#include "HttpMessage.h"
+
 namespace wk {
-    class HttpRequest {
+    class HttpRequest : public HttpMessage {
 
     };
 }

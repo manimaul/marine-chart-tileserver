@@ -11,14 +11,17 @@ class RequestHandlerWrapper : public proxygen::RequestHandler {
 
 public:
 
-    RequestHandlerWrapper(wk::Handler &handler) : handler(handler) {}
+    RequestHandlerWrapper(wk::Handler &handler) : handler(handler), request() {}
 
     void onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override {
-        // todo: capture request headers
+        headers->getHeaders().forEach([this] (auto &key, auto &value) {
+            request.addHeader(key, value);
+        });
     }
 
     void onBody(std::unique_ptr<folly::IOBuf> body) noexcept override {
-        //todo: capture request body
+        std::string bodyStr = reinterpret_cast<const char*>(body->data());
+        request.setBody(bodyStr);
     }
 
     void onEOM() noexcept override {
@@ -46,6 +49,7 @@ public:
     }
 
     wk::Handler handler;
+    wk::HttpRequest request;
 };
 
 class RequestHandlerFactory : public proxygen::RequestHandlerFactory {
@@ -104,10 +108,6 @@ void wk::HttpServer::listenAndServer() {
     });
 
     t.join();
-}
-
-static std::shared_ptr<wk::Handler> makeShared(wk::Handler handler) {
-    return std::make_shared<wk::Handler>(handler);
 }
 
 wk::HttpServer &wk::HttpServer::addRoute(std::string const &routePattern,

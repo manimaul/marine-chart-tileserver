@@ -19,9 +19,16 @@ int main(int argc, char *argv[]) {
                     .setPort(8080)
                     .setIdleTimeoutSeconds(60))
             .addRoute("/", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
-                return wk::HttpResponse(wk::HttpStatus::Ok)
+                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
                         .addHeader("hi", "there")
-                        .setBody("hello world");
+                        .setBody("hello path slash");
+                return response;
+            })
+            .addRoute("/foo", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
+                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
+                        .addHeader("hi", "there")
+                        .setBody("hello path foo");
+                return response;
             })
             .listenAndServer();
 }
