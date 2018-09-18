@@ -1,12 +1,28 @@
 
 #include <iostream>
-#include "Config.h"
+#include "http_server/Config.h"
+#include "http_server/HttpRequest.h"
 
-int main(int arg, char * argv[]) {
-    wk::Config config = wk::Config()
-            .setIpAddress("1.2.3.4")
-            .setPort(8080);
+#include "http_server/HttpRequest.h"
+#include "http_server/HttpResponse.h"
+#include "http_server/HttpServer.h"
+#include <glog/logging.h>
 
-    std::cout << "hi" << std::endl;
+int main(int argc, char *argv[]) {
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+    google::InitGoogleLogging(argv[0]);
+    google::InstallFailureSignalHandler();
+
+    wk::HttpServer(
+            wk::Config()
+                    .setIpAddress("0.0.0.0")
+                    .setPort(8080)
+                    .setIdleTimeoutSeconds(60))
+            .addRoute("/", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
+                return wk::HttpResponse(wk::HttpStatus::Ok)
+                        .addHeader("hi", "there")
+                        .setBody("hello world");
+            })
+            .listenAndServer();
 }
 
