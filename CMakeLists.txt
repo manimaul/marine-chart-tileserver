@@ -14,9 +14,25 @@ add_executable(marine_chart_tileserver
         src/http_server/HttpServer.h
         src/http_server/HttpMethod.h
         src/http_server/HttpMessage.cpp
-        src/http_server/HttpMessage.h)
+        src/http_server/HttpMessage.h
+        src/http_server/StaticHandler.cpp
+        src/http_server/StaticHandler.h
+        src/http_server/LambdaRequestHandler.cpp
+        src/http_server/LambdaRequestHandler.h
+        src/http_server/LambdaRequestHandlerFactory.cpp
+        src/http_server/LambdaRequestHandlerFactory.h
+        src/http_server/StaticContentHandlerFactory.cpp
+        src/http_server/StaticContentHandlerFactory.h)
 
-target_link_libraries(marine_chart_tileserver -lfolly -lwangle -lproxygenhttpserver -lproxygenlib -lglog -lgflags -lboost_system)
+target_link_libraries(marine_chart_tileserver
+        -lfolly
+        -lwangle
+        -lproxygenhttpserver
+        -lproxygenlib
+        -lglog
+        -lgflags
+        -lboost_system
+        -lboost_filesystem)
 
 if (APPLE)
     message("apple")
@@ -35,5 +51,7 @@ if (UNIX AND NOT APPLE)
     message("linux")
     target_link_libraries(marine_chart_tileserver -lboost_thread -lpthread)
 endif()
+
+file(COPY resources DESTINATION "${CMAKE_BINARY_DIR}")
 
 install (TARGETS marine_chart_tileserver DESTINATION bin)

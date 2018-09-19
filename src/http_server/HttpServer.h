@@ -13,16 +13,19 @@ namespace wk {
 
     class HttpServer {
     public:
-        HttpServer(Config const &config);
+        explicit HttpServer(Config const &config);
 
         HttpServer &addRoute(std::string const &routePattern,
                              HttpMethod const &method,
                              Handler handler);
 
-        void listenAndServer();
+        HttpServer &addStaticContent(std::string const &baseDirectory);
+
+        void listenAndServe();
 
     private:
         Config const config;
         std::unordered_map<std::string, wk::Handler> handlers;
+        std::string staticContentDir; //todo: (WK) turn into a set
     };
 }

@@ -18,18 +18,19 @@ int main(int argc, char *argv[]) {
                     .setIpAddress("0.0.0.0")
                     .setPort(8080)
                     .setIdleTimeoutSeconds(60))
-            .addRoute("/", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
-                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
-                        .addHeader("hi", "there")
-                        .setBody("hello path slash");
-                return response;
-            })
+            .addStaticContent("resources")
             .addRoute("/foo", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
                 wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
                         .addHeader("hi", "there")
                         .setBody("hello path foo");
                 return response;
             })
-            .listenAndServer();
+            .addRoute("/bar", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
+                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
+                        .addHeader("hi", "there")
+                        .setBody("hello path bar");
+                return response;
+            })
+            .listenAndServe();
 }
 
