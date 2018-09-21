@@ -1,5 +1,6 @@
 
 #include "HttpServer.h"
+#include "HttpMethod.h"
 #include "StaticHandler.h"
 #include "StaticContentHandlerFactory.h"
 #include "LambdaRequestHandler.h"
@@ -48,7 +49,8 @@ void wk::HttpServer::listenAndServe() {
 wk::HttpServer &wk::HttpServer::addRoute(std::string const &routePattern,
                                          HttpMethod const &method,
                                          Handler handler) {
-    handlers.emplace(routePattern, handler);
+    auto sig = httpMethodString(method) + routePattern;
+    handlers.emplace(sig, handler);
     return *this;
 }
 

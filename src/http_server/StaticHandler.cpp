@@ -18,27 +18,19 @@ namespace wk {
      * If egress pauses, file reading is also paused.
      */
     void StaticHandler::onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept {
-        if (headers->getMethod() != proxygen::HTTPMethod::GET) {
-            proxygen::ResponseBuilder(downstream_)
-                    .status(400, "Bad method")
-                    .body("Only GET is supported")
-                    .sendWithEOM();
-            return;
-        }
-
         try {
             // we do NOT read the path from the headers at this point as the path should been validated prior
             // https://www.owasp.org/index.php/Testing_Directory_traversal/file_include_(OTG-AUTHZ-001)
             file_ = std::make_unique<folly::File>(desiredPath.c_str());
         } catch (const std::system_error &ex) {
+            LOG(ERROR) << folly::exceptionStr(ex);
             proxygen::ResponseBuilder(downstream_)
-                    .status(404, "Not Found")
-                    .body(folly::to<std::string>("Could not find ", headers->getPath(),
-                                                 " ex=", folly::exceptionStr(ex)))
+                    .status(HttpStatus::NotFound, HttpStatus::reasonPhrase(HttpStatus::NotFound))
+                    .body(folly::to<std::string>("Could not find ", headers->getPath()))
                     .sendWithEOM();
         }
         proxygen::ResponseBuilder(downstream_)
-                .status(200, "Ok")
+                .status(HttpStatus::Ok, HttpStatus::reasonPhrase(HttpStatus::Ok))
                 .send();
         readFileScheduled_ = true;
         folly::getCPUExecutor()->add(
@@ -49,7 +41,7 @@ namespace wk {
     void StaticHandler::readFile(folly::EventBase *evb) {
         folly::IOBufQueue buf;
         while (file_ && !paused_) {
-            // read 4k-ish chunks and foward each one to the client
+            // read 4k-ish chunks and forward each one to the client
             auto data = buf.preallocate(4000, 4000);
             auto rc = folly::readNoInt(file_->fd(), data.first, data.second);
             if (rc < 0) {
@@ -111,14 +103,14 @@ namespace wk {
     }
 
 
-    void StaticHandler::onBody(std::unique_ptr<folly::IOBuf> /*body*/) noexcept {
+    void StaticHandler::onBody(std::unique_ptr<folly::IOBuf>) noexcept {
         // ignore, only support GET
     }
 
     void StaticHandler::onEOM() noexcept {
     }
 
-    void StaticHandler::onUpgrade(proxygen::UpgradeProtocol /*protocol*/) noexcept {
+    void StaticHandler::onUpgrade(proxygen::UpgradeProtocol) noexcept {
         // handler doesn't support upgrades
     }
 
@@ -128,7 +120,7 @@ namespace wk {
         checkForCompletion();
     }
 
-    void StaticHandler::onError(proxygen::ProxygenError /*err*/) noexcept {
+    void StaticHandler::onError(proxygen::ProxygenError) noexcept {
         finished_ = true;
         paused_ = true;
         checkForCompletion();

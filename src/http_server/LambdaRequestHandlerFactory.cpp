@@ -4,7 +4,8 @@ wk::LambdaRequestHandlerFactory::LambdaRequestHandlerFactory(std::unordered_map<
 
 proxygen::RequestHandler *
 wk::LambdaRequestHandlerFactory::onRequest(proxygen::RequestHandler *, proxygen::HTTPMessage *message) noexcept {
-    auto got = handlers.find(message->getPath());
+    auto sig = proxygen::methodToString(message->getMethod().value()) + message->getPath();
+    auto got = handlers.find(sig);
     if (got == handlers.end()) {
         Handler handler = [](HttpRequest &request) {
             return HttpResponse(HttpStatus::NotFound);

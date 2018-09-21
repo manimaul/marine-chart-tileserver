@@ -19,16 +19,22 @@ int main(int argc, char *argv[]) {
                     .setPort(8080)
                     .setIdleTimeoutSeconds(60))
             .addStaticContent("resources")
+            .addRoute("/foo", wk::HttpMethod::Post, [](wk::HttpRequest &request) {
+                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
+                        .addHeader("hi", "there")
+                        .setBody("hello path POST foo");
+                return response;
+            })
             .addRoute("/foo", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
                 wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
                         .addHeader("hi", "there")
-                        .setBody("hello path foo");
+                        .setBody("hello path GET foo");
                 return response;
             })
-            .addRoute("/bar", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
+            .addRoute("/baz", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
                 wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
                         .addHeader("hi", "there")
-                        .setBody("hello path bar");
+                        .setBody("hello path GET baz");
                 return response;
             })
             .listenAndServe();

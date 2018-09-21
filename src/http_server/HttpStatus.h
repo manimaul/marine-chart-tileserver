@@ -63,7 +63,7 @@ namespace wk {
             NetworkAuthenticationRequired = 511,
         };
 
-        static std::string reasonPhrase(Code code) {
+        static std::string reasonPhrase(Code const &code) {
             switch (code) {
                 case Continue:
                     return "Continue";
