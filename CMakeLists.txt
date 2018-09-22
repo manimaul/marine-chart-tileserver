@@ -4,6 +4,8 @@ project(marine_chart_tileserver)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INSTALL_PREFIX /opt/mct)
 
+add_subdirectory(src/tests)
+
 add_executable(marine_chart_tileserver
         src/Main.cpp
         src/http_server/Config.h
@@ -54,4 +56,4 @@ endif()
 
 file(COPY resources DESTINATION "${CMAKE_BINARY_DIR}")
 
-install (TARGETS marine_chart_tileserver DESTINATION bin)
+install(TARGETS marine_chart_tileserver DESTINATION bin)

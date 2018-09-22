@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: manimaul/proxygen-builder:stretch
+    steps:
+    - checkout
+    - run:
+        name: GTests
+        command: mkdir build && cd build && cmake .. && make install && /opt/mct/bin/runUnitTests
