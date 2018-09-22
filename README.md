@@ -1,5 +1,7 @@
 # Marine Chart TileServer
 
+[![CircleCI](https://circleci.com/gh/manimaul/marine-chart-tileserver.svg?style=svg)](https://circleci.com/gh/manimaul/marine-chart-tileserver)
+
 An HTTP tile server with integrated control plane supporting ingest of S57 and BSB4 marine chart formats and egest of
 popular raster/vector web map format(s).
 
