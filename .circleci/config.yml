@@ -7,4 +7,10 @@ jobs:
     - checkout
     - run:
         name: GTests
-        command: mkdir build && cd build && cmake .. && make install && /opt/mct/bin/runUnitTests
+        command: |
+          git submodule update --init --recursive
+          mkdir build
+          cd build
+          cmake ..
+          make install
+          /opt/mct/bin/runUnitTests
