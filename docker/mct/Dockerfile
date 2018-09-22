@@ -4,6 +4,7 @@ MAINTAINER manimaul@gmail.com
 ## Marine Chart TileServer Build
 COPY CMakeLists.txt /build/CMakeLists.txt
 COPY src/ /build/src/
+COPY resources/ build/resources
 RUN cd build && \
     mkdir _build && \
     cd _build && \

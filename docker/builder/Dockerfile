@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:stretch-slim
 MAINTAINER manimaul@gmail.com
 ENV PROXYGEN_VERSION="2018.08.20.00"
 
@@ -17,8 +17,5 @@ RUN curl -Lo proxygen.tar.gz https://github.com/facebook/proxygen/archive/v${PRO
     cd proxygen-${PROXYGEN_VERSION}/proxygen && \
     ./deps.sh -j $(nproc) && \
     ./reinstall.sh
-
-RUN rm -rf proxygen-2018.08.20.00 && \
-    rm -rf proxygen.tar.gz
 
 CMD "/bin/bash"
