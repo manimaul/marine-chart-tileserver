@@ -4,56 +4,24 @@ project(marine_chart_tileserver)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INSTALL_PREFIX /opt/mct)
 
-add_subdirectory(src/tests)
+# http server
+add_subdirectory(src/wkhttp)
 
-add_executable(marine_chart_tileserver
-        src/Main.cpp
-        src/http_server/Config.h
-        src/http_server/HttpRequest.h
-        src/http_server/HttpResponse.h
-        src/http_server/HttpStatus.h
-        src/http_server/HttpServer.cpp
-        src/http_server/HttpServer.h
-        src/http_server/HttpMethod.h
-        src/http_server/HttpMessage.cpp
-        src/http_server/HttpMessage.h
-        src/http_server/StaticHandler.cpp
-        src/http_server/StaticHandler.h
-        src/http_server/LambdaRequestHandler.cpp
-        src/http_server/LambdaRequestHandler.h
-        src/http_server/LambdaRequestHandlerFactory.cpp
-        src/http_server/LambdaRequestHandlerFactory.h
-        src/http_server/StaticContentHandlerFactory.cpp
-        src/http_server/StaticContentHandlerFactory.h)
+# google tests
+add_subdirectory(src/tests/googletest)
+enable_testing()
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+add_executable(runUnitTests src/tests/HttpServerTest.cpp)
+target_link_libraries(runUnitTests gtest gtest_main wkhttp)
 
-target_link_libraries(marine_chart_tileserver
-        -lfolly
-        -lwangle
-        -lproxygenhttpserver
-        -lproxygenlib
-        -lglog
-        -lgflags
-        -lboost_system
-        -lboost_filesystem)
+# example server
+add_executable(exampleServer src/ExampleServer.cpp)
+target_link_libraries(exampleServer wkhttp)
 
-if (APPLE)
-    message("apple")
-    set(OPENSSL_ROOT_DIR /usr/local/opt/openssl)
-    target_link_libraries(marine_chart_tileserver -lboost_thread-mt)
-    find_package(OpenSSL)
-    if(OPENSSL_FOUND)
-        target_link_libraries(marine_chart_tileserver ${OPENSSL_LIBRARIES})
-        target_include_directories(marine_chart_tileserver PRIVATE ${OPENSSL_INCLUDE_DIR})
-    else()
-        message(FATAL_ERROR "openssl not found")
-    endif()
-endif()
+# application
+add_executable(marine_chart_tileserver src/Main.cpp)
+target_link_libraries(marine_chart_tileserver wkhttp)
 
-if (UNIX AND NOT APPLE)
-    message("linux")
-    target_link_libraries(marine_chart_tileserver -lboost_thread -lpthread)
-endif()
-
+# resources
 file(COPY resources DESTINATION "${CMAKE_BINARY_DIR}")
-
 install(TARGETS marine_chart_tileserver DESTINATION bin)
