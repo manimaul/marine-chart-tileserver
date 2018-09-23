@@ -18,5 +18,6 @@ std::unordered_map<std::string, std::string> const &HttpMessage::getHeaders() co
 }
 
 HttpMessage &HttpMessage::addHeader(std::string const &key, std::string const &value) {
+    headers.emplace(key, value);
     return *this;
 }
