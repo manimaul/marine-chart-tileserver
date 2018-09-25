@@ -12,10 +12,14 @@ int main(int argc, char *argv[]) {
     google::InitGoogleLogging(argv[0]);
     google::InstallFailureSignalHandler();
 
+    auto ipAddress = "0.0.0.0";
+    auto port = 8080;
+
+    VLOG(0) << "starting example server listening on: " << ipAddress << ":" << port;
     wk::HttpServer(
             wk::Config()
-                    .setIpAddress("0.0.0.0")
-                    .setPort(8080)
+                    .setIpAddress(ipAddress)
+                    .setPort(port)
                     .setIdleTimeoutSeconds(60))
             .addRoute("/foo", wk::HttpMethod::Post, [](wk::HttpRequest &request) {
                 wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
