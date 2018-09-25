@@ -1,12 +1,14 @@
 
 #include <iostream>
-#include "http_server/Config.h"
-#include "http_server/HttpRequest.h"
+#include "wkhttp/Config.h"
+#include "wkhttp/HttpRequest.h"
 
-#include "http_server/HttpRequest.h"
-#include "http_server/HttpResponse.h"
-#include "http_server/HttpServer.h"
+#include "wkhttp/HttpRequest.h"
+#include "wkhttp/HttpResponse.h"
+#include "wkhttp/HttpServer.h"
 #include <glog/logging.h>
+
+#define VERSION "0.0.1-SNAPSHOT"
 
 int main(int argc, char *argv[]) {
     gflags::ParseCommandLineFlags(&argc, &argv, true);
@@ -19,22 +21,9 @@ int main(int argc, char *argv[]) {
                     .setPort(8080)
                     .setIdleTimeoutSeconds(60))
             .addStaticContent("resources")
-            .addRoute("/foo", wk::HttpMethod::Post, [](wk::HttpRequest &request) {
+            .addRoute("/version", wk::HttpMethod::Post, [](wk::HttpRequest &request) {
                 wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
-                        .addHeader("hi", "there")
-                        .setBody("hello path POST foo");
-                return response;
-            })
-            .addRoute("/foo", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
-                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
-                        .addHeader("hi", "there")
-                        .setBody("hello path GET foo");
-                return response;
-            })
-            .addRoute("/baz", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
-                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
-                        .addHeader("hi", "there")
-                        .setBody("hello path GET baz");
+                        .setBody(VERSION);
                 return response;
             })
             .listenAndServe();
