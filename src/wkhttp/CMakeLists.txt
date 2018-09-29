@@ -18,7 +18,12 @@ add_library(wkhttp STATIC
         LambdaRequestHandlerFactory.cpp
         LambdaRequestHandlerFactory.h
         StaticContentHandlerFactory.cpp
-        StaticContentHandlerFactory.h)
+        StaticContentHandlerFactory.h
+        HttpClient.cpp
+        HttpClient.h
+        CurlClient.cpp
+        CurlClient.h
+        )
 
 set(MCT_LIBS
         -lfolly
