@@ -45,23 +45,10 @@ namespace wk {
         });
     }
 
-    HTTPHeaders CurlClient::parseHeaders(const std::string &headersString) {
-        vector<StringPiece> headersList;
+    proxygen::HTTPHeaders CurlClient::parseHeaderMap(std::unordered_map<std::string, std::string> const &headerMap) {
         HTTPHeaders headers;
-        folly::split(",", headersString, headersList);
-        for (const auto &headerPair: headersList) {
-            vector<StringPiece> nv;
-            folly::split('=', headerPair, nv);
-            if (nv.size() > 0) {
-                if (nv[0].empty()) {
-                    continue;
-                }
-                StringPiece value("");
-                if (nv.size() > 1) {
-                    value = nv[1];
-                } // trim anything else
-                headers.add(nv[0], value);
-            }
+        for (auto const &each : headerMap) {
+            headers.add(each.first, each.second);
         }
         return headers;
     }
@@ -87,8 +74,7 @@ namespace wk {
     }
 
     void CurlClient::sslHandshakeFollowup(HTTPUpstreamSession *session) noexcept {
-        AsyncSSLSocket *sslSocket = dynamic_cast<AsyncSSLSocket *>(
-                session->getTransport());
+        auto *sslSocket = dynamic_cast<AsyncSSLSocket *>(session->getTransport());
 
         const unsigned char *nextProto = nullptr;
         unsigned nextProtoLength = 0;
@@ -105,7 +91,7 @@ namespace wk {
         // passing it to the connector::connectSSL() method
     }
 
-    void CurlClient::setFlowControlSettings(int32_t recvWindow) {
+    void CurlClient::setFlowControlSettings(size_t recvWindow) {
         recvWindow_ = recvWindow;
     }
 

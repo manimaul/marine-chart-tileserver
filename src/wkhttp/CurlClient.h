@@ -14,23 +14,23 @@ namespace wk {
     public:
         CurlClient(folly::EventBase* evb,
                    proxygen::HTTPMethod httpMethod,
-                   const proxygen::URL& url,
-                   const proxygen::URL* proxy,
-                   const proxygen::HTTPHeaders& headers,
-                   const std::string& inputFilename,
+                   proxygen::URL const &url,
+                   proxygen::URL const *proxy,
+                   proxygen::HTTPHeaders const &headers,
+                   std::string const &inputFilename,
                    bool h2c = false,
                    unsigned short httpMajor = 1,
                    unsigned short httpMinor = 1);
 
         virtual ~CurlClient() = default;
 
-        static proxygen::HTTPHeaders parseHeaders(const std::string& headersString);
+        static proxygen::HTTPHeaders parseHeaderMap(std::unordered_map<std::string, std::string> const &headerMap);
 
         // initial SSL related structures
-        void initializeSsl(const std::string& caPath,
-                           const std::string& nextProtos,
-                           const std::string& certPath = "",
-                           const std::string& keyPath = "");
+        void initializeSsl(std::string const &caPath,
+                           std::string const &nextProtos,
+                           std::string const &certPath = "",
+                           std::string const &keyPath = "");
         void sslHandshakeFollowup(proxygen::HTTPUpstreamSession* session) noexcept;
 
         // HTTPConnector methods
@@ -47,7 +47,7 @@ namespace wk {
                 std::unique_ptr<proxygen::HTTPHeaders> trailers) noexcept override;
         void onEOM() noexcept override;
         void onUpgrade(proxygen::UpgradeProtocol protocol) noexcept override;
-        void onError(const proxygen::HTTPException& error) noexcept override;
+        void onError(proxygen::HTTPException const &error) noexcept override;
         void onEgressPaused() noexcept override;
         void onEgressResumed() noexcept override;
 
@@ -58,7 +58,7 @@ namespace wk {
 
         const std::string& getServerName() const;
 
-        void setFlowControlSettings(int32_t recvWindow);
+        void setFlowControlSettings(size_t recvWindow);
 
         const proxygen::HTTPMessage* getResponse() const {
             return response_.get();
@@ -77,11 +77,11 @@ namespace wk {
         proxygen::HTTPMessage request_;
         const std::string inputFilename_;
         folly::SSLContextPtr sslContext_;
-        int32_t recvWindow_{0};
+        size_t recvWindow_{0};
         bool loggingEnabled_{true};
         bool h2c_{false};
-        unsigned short httpMajor_;
-        unsigned short httpMinor_;
+        uint8_t  httpMajor_;
+        uint8_t  httpMinor_;
 
         std::unique_ptr<proxygen::HTTPMessage> response_;
     };

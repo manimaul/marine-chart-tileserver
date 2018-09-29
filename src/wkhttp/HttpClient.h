@@ -1,5 +1,7 @@
 #include <utility>
 
+#include <utility>
+
 #pragma once
 
 #include "HttpMethod.h"
@@ -10,7 +12,7 @@ namespace wk {
 
     class HttpCall {
     public:
-        explicit HttpCall(HttpMethod method, HttpRequest request) : method(method), request(std::move(request)) {}
+        explicit HttpCall(std::string url, HttpMethod method, HttpRequest request) : url(std::move(url)), method(method), request(std::move(request)) {}
 
         HttpMethod getMethod() const {
             return method;
@@ -20,16 +22,21 @@ namespace wk {
             return request;
         }
 
+        const std::string &getUrl() const {
+            return url;
+        }
+
     private:
         HttpMethod method;
         HttpRequest request;
+        std::string url;
     };
 
     typedef std::function<HttpCall(HttpResponse const &response)> ClientHandler;
 
     class HttpClient {
     public:
-        void callAsync(ClientHandler &handler);
+        void callAsync(HttpCall &call, ClientHandler &handler);
         HttpResponse call(HttpCall &call);
     };
 }
