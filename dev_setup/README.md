@@ -3,8 +3,3 @@
 - Debian Stretch
 
 `./deps_debian_stretch.sh`
-
-
-- MacOS
-
-`./deps_debian_stretch.sh`

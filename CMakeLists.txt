@@ -36,22 +36,12 @@ target_link_libraries(marine_chart_tileserver
         -lboost_system
         -lboost_filesystem)
 
-if (APPLE)
-    message("apple")
-    set(OPENSSL_ROOT_DIR /usr/local/opt/openssl)
-    target_link_libraries(marine_chart_tileserver -lboost_thread-mt)
-    find_package(OpenSSL)
-    if(OPENSSL_FOUND)
-        target_link_libraries(marine_chart_tileserver ${OPENSSL_LIBRARIES})
-        target_include_directories(marine_chart_tileserver PRIVATE ${OPENSSL_INCLUDE_DIR})
-    else()
-        message(FATAL_ERROR "openssl not found")
-    endif()
-endif()
-
-if (UNIX AND NOT APPLE)
-    message("linux")
-    target_link_libraries(marine_chart_tileserver -lboost_thread -lpthread)
+find_package(OpenSSL)
+if(OPENSSL_FOUND)
+    target_link_libraries(marine_chart_tileserver -lboost_thread -lpthread ${OPENSSL_LIBRARIES})
+    target_include_directories(marine_chart_tileserver PRIVATE ${OPENSSL_INCLUDE_DIR})
+else()
+    message(FATAL_ERROR "openssl not found")
 endif()
 
 file(COPY resources DESTINATION "${CMAKE_BINARY_DIR}")
