@@ -15,6 +15,7 @@
 vial::HttpServer::HttpServer(vial::Config const &config) : config(config), handlers(), staticContentDir() {}
 
 void vial::HttpServer::listenAndServe() {
+    //todo: (WK) check for vial::Init:init
     std::vector<proxygen::HTTPServer::IPConfig> IPs = {
             {folly::SocketAddress(config.getIpAddress(), config.getPort(), true), proxygen::HTTPServer::Protocol::HTTP},
             {folly::SocketAddress(config.getIpAddress(), 11001, true), proxygen::HTTPServer::Protocol::HTTP2},

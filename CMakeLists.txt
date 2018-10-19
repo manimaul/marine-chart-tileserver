@@ -1,33 +1,26 @@
 cmake_minimum_required(VERSION 3.12)
-project(marine_chart_tileserver)
+project(vial)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_INSTALL_PREFIX /opt/mct)
 
-add_subdirectory(src/tests)
+# Tests
 
-add_executable(marine_chart_tileserver
-        src/Main.cpp
-        src/http_server/Config.h
-        src/http_server/HttpRequest.h
-        src/http_server/HttpResponse.h
-        src/http_server/HttpStatus.h
-        src/http_server/HttpServer.cpp
-        src/http_server/HttpServer.h
-        src/http_server/HttpMethod.h
-        src/http_server/HttpMessage.cpp
-        src/http_server/HttpMessage.h
-        src/http_server/StaticHandler.cpp
-        src/http_server/StaticHandler.h
-        src/http_server/LambdaRequestHandler.cpp
-        src/http_server/LambdaRequestHandler.h
-        src/http_server/LambdaRequestHandlerFactory.cpp
-        src/http_server/LambdaRequestHandlerFactory.h
-        src/http_server/StaticContentHandlerFactory.cpp
-        src/http_server/StaticContentHandlerFactory.h)
+add_subdirectory(tests)
 
-target_link_libraries(marine_chart_tileserver
-        -lfolly
+# Vial
+set(VIAL_SOURCES vial/HttpServer.cpp
+        vial/HttpMessage.cpp
+        vial/StaticHandler.cpp
+        vial/Init.cpp
+        vial/LambdaRequestHandler.cpp
+        vial/LambdaRequestHandlerFactory.cpp
+        vial/StaticContentHandlerFactory.cpp)
+add_library(vial SHARED ${VIAL_SOURCES})
+add_library(vial_static STATIC ${VIAL_SOURCES})
+
+include_directories(vial/include)
+
+set(VIAL_LINK_LIBS -lfolly
         -lwangle
         -lproxygenhttpserver
         -lproxygenlib
@@ -38,12 +31,26 @@ target_link_libraries(marine_chart_tileserver
 
 find_package(OpenSSL)
 if(OPENSSL_FOUND)
-    target_link_libraries(marine_chart_tileserver -lboost_thread -lpthread ${OPENSSL_LIBRARIES})
-    target_include_directories(marine_chart_tileserver PRIVATE ${OPENSSL_INCLUDE_DIR})
+    set(VIAL_LINK_LIBS ${VIAL_LINK_LIBS} -lboost_thread -lpthread ${OPENSSL_LIBRARIES})
+    target_link_libraries(vial ${VIAL_LINK_LIBS})
+    target_link_libraries(vial_static ${VIAL_LINK_LIBS})
+    target_include_directories(vial_static PRIVATE ${OPENSSL_INCLUDE_DIR})
 else()
     message(FATAL_ERROR "openssl not found")
 endif()
 
-file(COPY resources DESTINATION "${CMAKE_BINARY_DIR}")
+# Example
 
-install(TARGETS marine_chart_tileserver DESTINATION bin)
+add_executable(vial_example example/Main.cpp)
+target_link_libraries(vial_example vial)
+target_include_directories(vial_example PRIVATE vial/include)
+file(COPY example/resources DESTINATION "${CMAKE_BINARY_DIR}/vial-example")
+
+# Installation
+
+install(TARGETS vial
+        LIBRARY DESTINATION lib)
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/vial/include/
+        DESTINATION include/vial
+        FILES_MATCHING PATTERN "*.h*")
