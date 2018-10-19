@@ -6,7 +6,7 @@
 #include <proxygen/httpserver/RequestHandlerFactory.h>
 #include <unordered_map>
 
-namespace wk {
+namespace vial {
     class LambdaRequestHandlerFactory : public proxygen::RequestHandlerFactory {
     public:
         explicit LambdaRequestHandlerFactory(std::unordered_map<std::string, Handler> &handlers);

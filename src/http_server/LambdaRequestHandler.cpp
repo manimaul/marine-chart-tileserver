@@ -1,24 +1,24 @@
 #include "LambdaRequestHandler.h"
 
 
-wk::LambdaRequestHandler::LambdaRequestHandler(wk::Handler &handler) : handler(handler), request() {}
+vial::LambdaRequestHandler::LambdaRequestHandler(vial::Handler &handler) : handler(handler), request() {}
 
-void wk::LambdaRequestHandler::onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept {
+void vial::LambdaRequestHandler::onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept {
     headers->getHeaders().forEach([this](auto &key, auto &value) {
         request.addHeader(key, value);
     });
 }
 
-void wk::LambdaRequestHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
+void vial::LambdaRequestHandler::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
     std::string bodyStr = reinterpret_cast<const char *>(body->data());
     request.setBody(bodyStr);
 }
 
-void wk::LambdaRequestHandler::onEOM() noexcept {
-    auto request = wk::HttpRequest();
-    wk::HttpResponse response = handler(request);
+void vial::LambdaRequestHandler::onEOM() noexcept {
+    auto request = vial::HttpRequest();
+    vial::HttpResponse response = handler(request);
     auto builder = proxygen::ResponseBuilder(downstream_);
-    builder.status(response.status, wk::HttpStatus::reasonPhrase(response.status))
+    builder.status(response.status, vial::HttpStatus::reasonPhrase(response.status))
             .body(folly::IOBuf::copyBuffer(response.getBody()));
     for (auto const &pair : response.getHeaders()) {
         builder.header(pair.first, pair.second);
@@ -26,14 +26,14 @@ void wk::LambdaRequestHandler::onEOM() noexcept {
     builder.sendWithEOM();
 }
 
-void wk::LambdaRequestHandler::onUpgrade(proxygen::UpgradeProtocol proto) noexcept {
+void vial::LambdaRequestHandler::onUpgrade(proxygen::UpgradeProtocol proto) noexcept {
     // handler doesn't support upgrades
 }
 
-void wk::LambdaRequestHandler::requestComplete() noexcept {
+void vial::LambdaRequestHandler::requestComplete() noexcept {
     delete this;
 }
 
-void wk::LambdaRequestHandler::onError(proxygen::ProxygenError err) noexcept {
+void vial::LambdaRequestHandler::onError(proxygen::ProxygenError err) noexcept {
     delete this;
 }

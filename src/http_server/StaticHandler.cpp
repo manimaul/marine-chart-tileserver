@@ -10,7 +10,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 
-namespace wk {
+namespace vial {
 
     /**
      * Handles requests by serving the file named in path.  Only supports GET.

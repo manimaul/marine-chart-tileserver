@@ -7,9 +7,9 @@
 #include "HttpResponse.h"
 
 
-namespace wk {
+namespace vial {
 
-    typedef std::function<wk::HttpResponse(wk::HttpRequest &request)> Handler;
+    typedef std::function<vial::HttpResponse(vial::HttpRequest &request)> Handler;
 
     class HttpServer {
     public:
@@ -25,7 +25,7 @@ namespace wk {
 
     private:
         Config const config;
-        std::unordered_map<std::string, wk::Handler> handlers;
+        std::unordered_map<std::string, vial::Handler> handlers;
         std::string staticContentDir; //todo: (WK) turn into a set
     };
 }

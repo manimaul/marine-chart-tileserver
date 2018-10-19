@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace wk {
+namespace vial {
     enum HttpMethod {
         Options,
         Get,

@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace wk {
+namespace vial {
     struct HttpStatus {
         enum Code {
             Continue = 100,

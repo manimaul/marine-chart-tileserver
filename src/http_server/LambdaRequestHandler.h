@@ -5,13 +5,13 @@
 #include "HttpServer.h"
 #include "HttpRequest.h"
 
-namespace wk {
+namespace vial {
 
     class LambdaRequestHandler : public proxygen::RequestHandler {
 
     public:
 
-        explicit LambdaRequestHandler(wk::Handler &handler);
+        explicit LambdaRequestHandler(vial::Handler &handler);
 
         void onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
 
@@ -26,8 +26,8 @@ namespace wk {
         void onError(proxygen::ProxygenError err) noexcept override;
 
     private:
-        wk::Handler handler;
-        wk::HttpRequest request;
+        vial::Handler handler;
+        vial::HttpRequest request;
     };
 }
 

@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace wk {
+namespace vial {
 
     class Config {
     public:

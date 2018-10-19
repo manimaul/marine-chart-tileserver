@@ -2,7 +2,7 @@
 
 #include "HttpMessage.h"
 
-namespace wk {
+namespace vial {
     class HttpRequest : public HttpMessage {
 
     };

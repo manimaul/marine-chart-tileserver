@@ -7,7 +7,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
-namespace wk {
+namespace vial {
     class StaticContentHandlerFactory : public proxygen::RequestHandlerFactory {
     public:
         explicit StaticContentHandlerFactory(std::string const &dir);

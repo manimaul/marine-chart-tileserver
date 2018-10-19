@@ -13,26 +13,26 @@ int main(int argc, char *argv[]) {
     google::InitGoogleLogging(argv[0]);
     google::InstallFailureSignalHandler();
 
-    wk::HttpServer(
-            wk::Config()
+    vial::HttpServer(
+            vial::Config()
                     .setIpAddress("0.0.0.0")
                     .setPort(8080)
                     .setIdleTimeoutSeconds(60))
             .addStaticContent("resources")
-            .addRoute("/foo", wk::HttpMethod::Post, [](wk::HttpRequest &request) {
-                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
+            .addRoute("/foo", vial::HttpMethod::Post, [](vial::HttpRequest &request) {
+                vial::HttpResponse response = vial::HttpResponse(vial::HttpStatus::Ok)
                         .addHeader("hi", "there")
                         .setBody("hello path POST foo");
                 return response;
             })
-            .addRoute("/foo", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
-                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
+            .addRoute("/foo", vial::HttpMethod::Get, [](vial::HttpRequest &request) {
+                vial::HttpResponse response = vial::HttpResponse(vial::HttpStatus::Ok)
                         .addHeader("hi", "there")
                         .setBody("hello path GET foo");
                 return response;
             })
-            .addRoute("/baz", wk::HttpMethod::Get, [](wk::HttpRequest &request) {
-                wk::HttpResponse response = wk::HttpResponse(wk::HttpStatus::Ok)
+            .addRoute("/baz", vial::HttpMethod::Get, [](vial::HttpRequest &request) {
+                vial::HttpResponse response = vial::HttpResponse(vial::HttpStatus::Ok)
                         .addHeader("hi", "there")
                         .setBody("hello path GET baz");
                 return response;

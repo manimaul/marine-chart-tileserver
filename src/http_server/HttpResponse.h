@@ -6,7 +6,7 @@
 #include "HttpStatus.h"
 #include "HttpMessage.h"
 
-namespace wk {
+namespace vial {
     class HttpResponse : public HttpMessage {
     public:
         explicit HttpResponse(HttpStatus::Code const status) : status(status), HttpMessage() {}

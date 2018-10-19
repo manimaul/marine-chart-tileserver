@@ -2,3 +2,4 @@ scratch/
 cmake-build-debug/
 .idea/
 *.iml
+build/

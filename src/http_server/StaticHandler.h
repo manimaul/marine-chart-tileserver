@@ -5,7 +5,7 @@
 #include <proxygen/httpserver/RequestHandler.h>
 #include <boost/filesystem.hpp>
 
-namespace wk {
+namespace vial {
 
     class StaticHandler : public proxygen::RequestHandler {
     public:
